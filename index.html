@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('px.jpg'); /* Replace 'your-background-image.jpg' with your actual image file */
+    background-size: cover;
+    background-position: center;
+  }
+
+  .stopwatch {
+    text-align: center;
+  }
+
+  .display {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+  .controls {
+    margin-top: 20px;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    outline: none;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  .laps {
+    margin-top: 20px;
+    text-align: left;
+  }
+
+  .lap-time {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="stopwatch">
+  <div class="display" id="display">00:00:00</div>
+  <div class="controls">
+    <button id="startStopButton">Start</button>
+    <button id="resetButton">Reset</button>
+    <button id="lapButton">Lap</button>
+  </div>
+  <div class="laps" id="lapsContainer">
+    <h3>Lap Times:</h3>
+  </div>
+</div>
+
+<script>
+  let timer;
+  let time = 0;
+  let running = false;
+  let lapCounter = 0;
+
+  function startStop() {
+    if (!running) {
+      running = true;
+      timer = setInterval(updateDisplay, 1000);
+      document.getElementById('startStopButton').textContent = 'Pause';
+    } else {
+      running = false;
+      clearInterval(timer);
+      document.getElementById('startStopButton').textContent = 'Resume';
+    }
+  }
+
+  function reset() {
+    clearInterval(timer);
+    running = false;
+    time = 0;
+    document.getElementById('display').textContent = '00:00:00';
+    document.getElementById('startStopButton').textContent = 'Start';
+    clearLaps();
+  }
+
+  function lap() {
+    if (running) {
+      lapCounter++;
+      const lapTime = formatTime(time);
+      const lapElement = document.createElement('div');
+      lapElement.classList.add('lap-time');
+      lapElement.textContent = `Lap ${lapCounter}: ${lapTime}`;
+      document.getElementById('lapsContainer').appendChild(lapElement);
+    }
+  }
+
+  function updateDisplay() {
+    time++;
+    document.getElementById('display').textContent = formatTime(time);
+  }
+
+  function formatTime(seconds) {
+    const hours = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const minutes = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    return `${hours}:${minutes}:${secs}`;
+  }
+
+  function clearLaps() {
+    lapCounter = 0;
+    document.getElementById('lapsContainer').innerHTML = '<h3>Lap Times:</h3>';
+  }
+
+  function toggleStartStop() {
+    if (!running) {
+      startStop();
+    } else {
+      startStop();
+    }
+  }
+
+  document.getElementById('startStopButton').addEventListener('click', toggleStartStop);
+  document.getElementById('resetButton').addEventListener('click', reset);
+  document.getElementById('lapButton').addEventListener('click', lap);
+</script>
+</body>
+</html>
